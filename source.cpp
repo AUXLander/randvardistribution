@@ -4,11 +4,13 @@
 
 #include "src/distribution.hpp"
 
-void makeHistogramm(Distribution& distribution, std::map<uint64_t, uint64_t>& histogramm, const unsigned int N = 10000)
+void makeHistogramm(DistributionBase& distribution, std::map<uint64_t, uint64_t>& histogramm, const unsigned int N = 10000)
 {
+	histogramm.clear();
+
 	for (int n = 0; n < N; ++n)
 	{
-		++histogramm[distribution.next(0, 100)];
+		++histogramm[distribution.next()];
 	}
 }
 
@@ -17,16 +19,14 @@ int main()
 	std::random_device device;
 	std::mt19937 generator(device());
 
-	UniformDistribution uniform(&generator);
-	PoissonDistribution poisson(&generator);
-	NormalDistribution  normal (&generator);
+	Distribution<DistributionBase::Uniform> uniform(&generator, 0, 100);
+	//Distribution<DistributionBase::Poisson> poisson(&generator, 0, 100);
+	Distribution<DistributionBase::Normal>  normal (&generator, 0, 100);
 
 	std::map<uint64_t, uint64_t> histogramm;
 
 	makeHistogramm(uniform, histogramm);
-	makeHistogramm(poisson, histogramm);
-
-	return 0;
+	//makeHistogramm(poisson, histogramm);
 
 	makeHistogramm(normal, histogramm);
 
