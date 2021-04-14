@@ -4,16 +4,6 @@
 #include <random>
 #include <cstdint>
 
-
-char* add(char* string)
-{
-	string[0] = string[0] + 1;
-
-    return string;
-}
-
-
-
 class DistributionBase
 {
 	uint64_t m_min;
@@ -93,14 +83,7 @@ public:
 
 	uint64_t inline next() final
 	{
-		double _next = __next();
-
-		if (_next > 1.0)
-		{
-			_next = _next;
-		}
-
-		return static_cast<uint64_t>(_next * length);
+		return static_cast<uint64_t>(__next() * length);
 	}
 
 	~Distribution()
@@ -125,15 +108,13 @@ template<> double Distribution<DistributionBase::Uniform>::__next()
 }
 
 
-uint64_t uniform_next();
 
+template<> DistributionBase::Poisson* Distribution<DistributionBase::Poisson>::distribution_init()
+{
+	return new DistributionBase::Poisson(10.0);
+}
 
-// template<> DistributionBase::Poisson* Distribution<DistributionBase::Poisson>::distribution_init()
-// {
-// 	return new DistributionBase::Poisson(10.0);
-// }
-
-// template<> DistributionBase::Normal* Distribution<DistributionBase::Normal>::distribution_init()
-// {
-// 	return new DistributionBase::Normal(0.5, 1.0);
-// }
+template<> DistributionBase::Normal* Distribution<DistributionBase::Normal>::distribution_init()
+{
+	return new DistributionBase::Normal(0.5, 1.0);
+}

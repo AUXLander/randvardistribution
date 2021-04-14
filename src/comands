@@ -1,2 +1,0 @@
-clang -c distribution.cpp -o distribution.bc -emit-llvm
-llc -march=x86-64 distribution.bc -o distribution.c

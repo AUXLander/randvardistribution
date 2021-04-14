@@ -1,0 +1,8 @@
+#include "liblinkshared.h"
+
+int main(int argc, char** argv)
+{
+    printf("uniform: %ld\n", uniform_next());
+    printf("poisson: %ld\n", poisson_next());
+    printf(" normal: %ld\n",  normal_next());
+}

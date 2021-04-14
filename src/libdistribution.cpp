@@ -1,23 +1,31 @@
+#include "liblinkshared.h"
 #include "libdistribution.hpp"
 
 static std::random_device device;
 static std::mt19937 generator(device());
 
 static Distribution<DistributionBase::Uniform> uniform(&generator, 0, 100);
+static Distribution<DistributionBase::Poisson> poisson(&generator, 0, 100);
+static Distribution<DistributionBase::Normal>   normal(&generator, 0, 100);
+
 
 uint64_t uniform_next()
 {
     return uniform.next();
 }
 
-#include <stdio.h>
+uint64_t poisson_next()
+{
+    return poisson.next();
+}   
+
+uint64_t normal_next()
+{
+    return normal.next();
+}
+
 
 int main(int argc, char** argv)
 {
-    if (argc > 0)
-    {
-        printf("%s\n", argv[1]);
-        printf("%s\n", add(argv[1]));
-        printf("%d\n", uniform_next());
-    }
+    printf("%ld\n", uniform_next());
 }
