@@ -4,6 +4,16 @@
 #include <random>
 #include <cstdint>
 
+
+char* add(char* string)
+{
+	string[0] = string[0] + 1;
+
+    return string;
+}
+
+
+
 class DistributionBase
 {
 	uint64_t m_min;
@@ -48,8 +58,7 @@ public:
 	virtual uint64_t next() = 0;
 };
 
-template<class T>
-class Distribution : public DistributionBase
+template<class T> class Distribution : public DistributionBase
 {
 	T* distribution{ nullptr };
 
@@ -115,12 +124,16 @@ template<> double Distribution<DistributionBase::Uniform>::__next()
 	return static_cast<double>(distribution->operator()(*generator)) * div;
 }
 
-template<> DistributionBase::Poisson* Distribution<DistributionBase::Poisson>::distribution_init()
-{
-	return new DistributionBase::Poisson(10.0);
-}
 
-template<> DistributionBase::Normal* Distribution<DistributionBase::Normal>::distribution_init()
-{
-	return new DistributionBase::Normal(0.5, 1.0);
-}
+uint64_t uniform_next();
+
+
+// template<> DistributionBase::Poisson* Distribution<DistributionBase::Poisson>::distribution_init()
+// {
+// 	return new DistributionBase::Poisson(10.0);
+// }
+
+// template<> DistributionBase::Normal* Distribution<DistributionBase::Normal>::distribution_init()
+// {
+// 	return new DistributionBase::Normal(0.5, 1.0);
+// }
