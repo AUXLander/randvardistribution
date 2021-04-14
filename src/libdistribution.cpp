@@ -8,7 +8,6 @@ static Distribution<DistributionBase::Uniform> uniform(&generator, 0, 100);
 static Distribution<DistributionBase::Poisson> poisson(&generator, 0, 100);
 static Distribution<DistributionBase::Normal>   normal(&generator, 0, 100);
 
-
 uint64_t uniform_next()
 {
     return uniform.next();
@@ -22,10 +21,4 @@ uint64_t poisson_next()
 uint64_t normal_next()
 {
     return normal.next();
-}
-
-
-int main(int argc, char** argv)
-{
-    printf("%ld\n", uniform_next());
 }

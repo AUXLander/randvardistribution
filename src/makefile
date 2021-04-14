@@ -1,34 +1,35 @@
-
-
-CC = $(CROSS_COMPILE)g++-8
+CC  = $(CROSS_COMPILE)gcc
+CXX = $(CROSS_COMPILE)g++-8
 VER = -DVER=$(version)
-CPPFLAGS =-O3#-std=gnu++2a 
 
-PRG	= libdistribution 
+CFLAGS =-O3
+CPPFLAGS =-O3 -std=gnu++2a
 
 OBJ	= libdistribution.o libuser.o
+LIB = libdistribution.so
 
-BINS = libdistribution libdistribution.so runtime libuser
+PRG = libdistribution runtime libuser
+BINS = $(OBJ) $(LIB) #$(PRG) 
 
 all: $(BINS)
 
 libdistribution.o: libdistribution.cpp
-	$(CC) $(CPPFLAGS) -fPIC -c libdistribution.cpp
+	$(CXX) $(CPPFLAGS) -fPIC -c libdistribution.cpp
 
 libdistribution.so: libdistribution.o
-	$(CC) $(CPPFLAGS) -fPIC -shared -o $@ $^
+	$(CXX) $(CPPFLAGS) -fPIC -shared -o $@ $^
 
 libdistribution: libdistribution.o
-	$(CC) $(CPPFLAGS) -o $@ $^
+	$(CXX) $(CPPFLAGS) -o $@ $^
 
 runtime: libdistribution.cpp
-	$(CC) $(CPPFLAGS) -o $@ $^ -L. -ldistribution
+	$(CXX) $(CPPFLAGS) -o $@ $^ -L. -ldistribution
 
 libuser.o: libuser.c
-	gcc -c libuser.c
+	$(CC) $(CFLAGS) -c libuser.c
 
 libuser: libuser.o
-	gcc -o libuser libuser.o libdistribution.so
+	$(CC) $(CFLAGS) -o libuser libuser.o libdistribution.so
 
 clean:
 	rm -f $(OBJ) $(BINS)
