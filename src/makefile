@@ -11,7 +11,7 @@ LIB = libdistribution.so
 PRG = libdistribution runtime libuser
 BINS = $(OBJ) $(LIB) #$(PRG) 
 
-all: $(BINS)
+all: clean $(BINS) 
 
 libdistribution.o: libdistribution.cpp
 	$(CXX) $(CPPFLAGS) -fPIC -c libdistribution.cpp

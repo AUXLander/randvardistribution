@@ -4,9 +4,9 @@
 static std::random_device device;
 static std::mt19937 generator(device());
 
-static Distribution<DistributionBase::Uniform> uniform(&generator, 0, 100);
-static Distribution<DistributionBase::Poisson> poisson(&generator, 0, 100);
-static Distribution<DistributionBase::Normal>   normal(&generator, 0, 100);
+static Distribution<DistributionBase::Uniform> uniform(&generator, -100, 100);
+static Distribution<DistributionBase::Poisson> poisson(&generator, -100, 100);
+static Distribution<DistributionBase::Normal>   normal(&generator, -100, 100);
 
 uint64_t uniform_next()
 {

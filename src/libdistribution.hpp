@@ -83,7 +83,7 @@ public:
 
 	uint64_t inline next() final
 	{
-		return static_cast<uint64_t>(__next() * length);
+		return static_cast<uint64_t>(__next() * (max - min) + min);
 	}
 
 	~Distribution()
@@ -116,5 +116,5 @@ template<> DistributionBase::Poisson* Distribution<DistributionBase::Poisson>::d
 
 template<> DistributionBase::Normal* Distribution<DistributionBase::Normal>::distribution_init()
 {
-	return new DistributionBase::Normal(0.5, 1.0);
+	return new DistributionBase::Normal(0, 1.0);
 }
