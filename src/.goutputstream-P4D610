@@ -3,16 +3,15 @@
 #include <ctime>
 #include <random>
 #include <cstdint>
-#include <stdio.h>
 
 class DistributionBase
 {
-	int64_t m_min;
-	int64_t m_max;
+	uint64_t m_min;
+	uint64_t m_max;
 
-	int64_t m_length;
+	uint64_t m_length;
 
-	void __setMinMax(int64_t minval, int64_t maxval)
+	void __setMinMax(uint64_t minval, uint64_t maxval)
 	{
 		m_min = 0;
 		m_max = 0;
@@ -23,30 +22,30 @@ class DistributionBase
 			m_max = maxval;
 		}
 
-		m_length = m_max - m_min;
+		m_length = m_max - m_min - 1;
 	}
 
 protected:
 	std::mt19937* generator;
 
-	void inline setMinMax(int64_t minval, int64_t maxval)
+	void inline setMinMax(uint64_t minval, uint64_t maxval)
 	{
 		return __setMinMax(minval,maxval);
 	}
 
 public:
-	typedef std::uniform_int_distribution<int64_t> Uniform;
-	typedef std::poisson_distribution<int64_t>     Poisson;
+	typedef std::uniform_int_distribution<uint64_t> Uniform;
+	typedef std::poisson_distribution<uint64_t>     Poisson;
 	typedef std::normal_distribution<float>         Normal;
 
-	const int64_t& min = m_min;
-	const int64_t& max	= m_max;
-	const int64_t& length = m_length;
+	const uint64_t& min = m_min;
+	const uint64_t& max	= m_max;
+	const uint64_t& length = m_length;
 
 	DistributionBase(std::mt19937* const gen) : generator(gen), m_min(0), m_max(0), m_length(0) { }
 
-	virtual void	init(int64_t minval, int64_t maxval) = 0;
-	virtual int64_t next() = 0;
+	virtual void	 init(uint64_t minval, uint64_t maxval) = 0;
+	virtual uint64_t next() = 0;
 };
 
 template<class T> class Distribution : public DistributionBase
@@ -65,12 +64,12 @@ template<class T> class Distribution : public DistributionBase
 
 public:
 	Distribution(std::mt19937* const gen) : DistributionBase(gen) { }
-	Distribution(std::mt19937* const gen, int64_t minval, int64_t maxval) : DistributionBase(gen) 
+	Distribution(std::mt19937* const gen, uint64_t minval, uint64_t maxval) : DistributionBase(gen) 
 	{
 		init(minval, maxval);
 	}
 
-	void init(int64_t minval, int64_t maxval) final
+	void init(uint64_t minval, uint64_t maxval) final
 	{
 		if (distribution != nullptr)
 		{
@@ -82,9 +81,9 @@ public:
 		distribution = distribution_init();
 	}
 
-	int64_t inline next() final
+	uint64_t inline next() final
 	{
-		return static_cast<int64_t>(__next() * length + min);
+		return static_cast<uint64_t>(__next() * (length));
 	}
 
 	~Distribution()
@@ -98,14 +97,14 @@ public:
 
 template<> DistributionBase::Uniform* Distribution<DistributionBase::Uniform>::distribution_init()
 {
-	return new DistributionBase::Uniform(0, std::numeric_limits<int64_t>::max());
+	return new DistributionBase::Uniform(0, 1000);
 }
 
 template<> double Distribution<DistributionBase::Uniform>::__next()
 {
-	constexpr long double div = 1.0L / static_cast<long double>(std::numeric_limits<int64_t>::max());
+	constexpr double div = 1.0 / 1000.0;
 
-	return static_cast<double>(static_cast<long double>(distribution->operator()(*generator)) * div);
+	return static_cast<double>(distribution->operator()(*generator)) * div;
 }
 
 

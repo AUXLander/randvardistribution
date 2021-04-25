@@ -8,8 +8,8 @@ CPPFLAGS =-O3 -std=gnu++2a
 OBJ	= libdistribution.o libuser.o
 LIB = libdistribution.so
 
-PRG = libdistribution runtime libuser
-BINS = $(OBJ) $(LIB) #$(PRG) 
+PRG = libuser #libdistribution runtime 
+BINS = $(OBJ) $(LIB) $(PRG) 
 
 all: clean $(BINS) 
 
