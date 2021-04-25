@@ -83,7 +83,7 @@ public:
 
 	uint64_t inline next() final
 	{
-		return static_cast<uint64_t>(__next() * (max - min) + min);
+		return static_cast<uint64_t>(__next() * length);
 	}
 
 	~Distribution()
