@@ -7,7 +7,6 @@ extern "C" {
 #include <stdint.h>
 
 int64_t uniform_next();
-int64_t poisson_next();
 int64_t  normal_next();
 
 

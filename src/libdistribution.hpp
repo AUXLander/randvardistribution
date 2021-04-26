@@ -12,7 +12,10 @@ class DistributionBase
 
 	int64_t m_length;
 
-	void __setMinMax(int64_t minval, int64_t maxval)
+protected:
+	std::mt19937* generator;
+
+	void setMinMax(int64_t minval, int64_t maxval)
 	{
 		m_min = 0;
 		m_max = 0;
@@ -22,22 +25,19 @@ class DistributionBase
 			m_min = minval;
 			m_max = maxval;
 		}
+		else
+		{
+			m_min = maxval;
+			m_max = minval;
+		}
 
 		m_length = m_max - m_min;
 	}
 
-protected:
-	std::mt19937* generator;
-
-	void inline setMinMax(int64_t minval, int64_t maxval)
-	{
-		return __setMinMax(minval,maxval);
-	}
-
 public:
+	typedef std::exponential_distribution<int64_t> Exponential;
 	typedef std::uniform_int_distribution<int64_t> Uniform;
-	typedef std::poisson_distribution<int64_t>     Poisson;
-	typedef std::normal_distribution<float>         Normal;
+	typedef std::normal_distribution<double>        Normal;
 
 	const int64_t& min = m_min;
 	const int64_t& max	= m_max;
@@ -56,11 +56,6 @@ template<class T> class Distribution : public DistributionBase
 	T* distribution_init()
 	{
 		return nullptr;
-	}
-
-	double __next()
-	{
-		return distribution ? static_cast<double>(distribution->operator()(*generator)) : 0;
 	}
 
 public:
@@ -84,7 +79,7 @@ public:
 
 	int64_t inline next() final
 	{
-		return static_cast<int64_t>(__next() * length + min);
+		return distribution ? static_cast<int64_t>(distribution->operator()(*generator)) : 0LL;
 	}
 
 	~Distribution()
@@ -98,24 +93,23 @@ public:
 
 template<> DistributionBase::Uniform* Distribution<DistributionBase::Uniform>::distribution_init()
 {
-	return new DistributionBase::Uniform(0, std::numeric_limits<int64_t>::max());
+	return new DistributionBase::Uniform(min, max);
 }
 
-template<> double Distribution<DistributionBase::Uniform>::__next()
+template<> DistributionBase::Exponential* Distribution<DistributionBase::Exponential>::distribution_init()
 {
-	constexpr long double div = 1.0L / static_cast<long double>(std::numeric_limits<int64_t>::max());
-
-	return static_cast<double>(static_cast<long double>(distribution->operator()(*generator)) * div);
-}
-
-
-
-template<> DistributionBase::Poisson* Distribution<DistributionBase::Poisson>::distribution_init()
-{
-	return new DistributionBase::Poisson(10.0);
+	return new DistributionBase::Exponential(10.0);
 }
 
 template<> DistributionBase::Normal* Distribution<DistributionBase::Normal>::distribution_init()
 {
-	return new DistributionBase::Normal(0, 1.0);
+	// https://baguzin.ru/wp/ravnomernoe-i-eksponentsialnoe-rasp/
+
+	const double radius = static_cast<double>(length / 2.0);
+	const double disp_3 = (radius * radius)  / 4.0;
+	const double disp   = disp_3 / 3.0;
+	const double sigma  = sqrt(disp);
+	const double mean   = static_cast<double>(min + max) / 2;
+
+	return new DistributionBase::Normal(mean, sigma);
 }
