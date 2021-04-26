@@ -1,3 +1,12 @@
+ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+
+LIB_NAME = libdistribution.so
+LIB_SUBDIR = /
+LIB_PATH = $(ROOT_DIR)$(LIB_SUBDIR)$(LIB_NAME)
+
+LIB_INSTALL_PATH = /usr/lib/
+LIB_INSTALL_PATH64 = /usr/lib64/
+
 CC  = $(CROSS_COMPILE)gcc
 CXX = $(CROSS_COMPILE)g++-8
 VER = -DVER=$(version)
@@ -11,7 +20,11 @@ LIB = libdistribution.so
 PRG = libuser #libdistribution runtime 
 BINS = $(OBJ) $(LIB) $(PRG) 
 
-all: clean $(BINS) 
+all: clean $(BINS) install
+
+install:
+	if [ -d "$(LIB_INSTALL_PATH)" ]; 	then sudo cp $(LIB_PATH) $(LIB_INSTALL_PATH); 	fi
+	if [ -d "$(LIB_INSTALL_PATH64)" ]; 	then sudo cp $(LIB_PATH) $(LIB_INSTALL_PATH64); fi
 
 libdistribution.o: libdistribution.cpp
 	$(CXX) $(CPPFLAGS) -fPIC -c libdistribution.cpp

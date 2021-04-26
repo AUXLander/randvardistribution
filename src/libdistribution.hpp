@@ -4,6 +4,8 @@
 #include <random>
 #include <cstdint>
 #include <stdio.h>
+#include <iostream>
+
 
 class DistributionBase
 {
@@ -35,9 +37,9 @@ protected:
 	}
 
 public:
-	typedef std::exponential_distribution<int64_t> Exponential;
+	typedef std::exponential_distribution<double>  Exponential;
 	typedef std::uniform_int_distribution<int64_t> Uniform;
-	typedef std::normal_distribution<double>        Normal;
+	typedef std::normal_distribution<double>       Normal;
 
 	const int64_t& min = m_min;
 	const int64_t& max	= m_max;
